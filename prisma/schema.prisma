@@ -25,6 +25,7 @@ model User {
 	// Relations
 	sessions Session[]
 	accounts Account[]
+	activitiesLog ActivitiesLog[]
 	@@map("user")
 }
 model Session {
@@ -74,3 +75,13 @@ model Category {
 	slung String @unique
 }
 
+model ActivitiesLog {
+	id String @id @default(auto()) @map("_id") @db.ObjectId
+	userId String @db.ObjectId
+	action String
+	details String
+	createdAt DateTime @default(now())
+
+	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+	@@map("activities_log")
+}
