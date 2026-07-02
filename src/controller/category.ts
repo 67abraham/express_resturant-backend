@@ -2,6 +2,7 @@ import { date, reddit } from "better-auth";
 import { logger } from "../../lib/logger";
 import { prisma } from "../../lib/prisma";
 import type {Request, Response} from "express"
+import { activities_log } from "../../lib/activities-log";
 
 
 
@@ -17,9 +18,15 @@ export const createCategory = async(req:Request, res: Response )=>{
                 data: {name, slung}
             })
 
+            await activities_log({
+            userId : (req as any).user?.id,
+            action: "CREATE_CATEGORY",
+            details: `Update Category: ${createCategory.name}`
+             })
+
             logger.info(`Category is created: ${name}`)
 
-            res.status(200).json(createCategory)
+            res.status(201).json(createCategory)
 
         }else{
             logger.error("Name exist")
@@ -47,6 +54,12 @@ export const updateCategory = async (req:Request, res:Response)=>{
             data: {name, slung}
         })
 
+        await activities_log({
+            userId : (req as any).user?.id,
+            action: "UPDATE_CATEGORY",
+            details: `Update Category: ${updCategory.name}`
+        })
+
         logger.info("Category Updated")
         res.status(200).json(updCategory)
 
@@ -66,6 +79,11 @@ export const deleteCategory = async (req:Request, res:Response)=>{
         if(!id){return res.status(400).json({message: "Invalid Category"})};
         const deleC = await prisma.category.delete({where: {id}});
 
+          await activities_log({
+            userId : (req as any).user?.id,
+            action: "DELETE_CATEGORY",
+            details: `Delete Category: ${deleC.name}`
+        })
         logger.info("Category is Deleted")
         res.status(200).json({msg: "Category Deleted"})
 
@@ -99,6 +117,12 @@ export const getCategory = async (req:Request, res: Response)=>{
 
         //total pages
         const totalPages = Math.ceil(totalItem / limit);
+
+          await activities_log({
+            userId : (req as any).user?.id,
+            action: "GET_CATEGORY",
+            details: `Get all Category`
+        })
 
         logger.info("Get All Category")
 
