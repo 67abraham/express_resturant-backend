@@ -13,19 +13,17 @@ export const requireAuth = async (req:Request, res:Response, next: NextFunction)
             
         })
 
-        logger.info(req.headers)
-
         if(!session || !session.user){
            return res.status(401).json({msg: "Unauthorized"})
         }
 
-        (req as any)= session.user;
-        (req as any) = session.session;
+        (req as any).user= session.user;
+        (req as any).session = session.session;
 
           await activities_log({
                     userId : session.user.id,
                     action: "VERIFIED_USER_LOGIN",
-                    details: `User is authenticated ${session.user.email}`
+                    details: `User is authenticated: ${session.user.email}`
                 });
         return next();
     } catch (error) {
