@@ -51,3 +51,26 @@ export const getActivities_log = async(req:Request, res:Response)=>{
         
     }
 }
+
+export const createActivities = async (req:Request, res: Response)=>{
+    try {
+        const {action, details} = req.body;
+
+        if(!action || !details){
+            return res.status(401).json({msg: " Data is Required"})
+        }
+
+        await activities_log({
+            userId : (req as any).user?.id,
+            action: action,
+            details: details
+        })
+
+        logger.info("Create Activities_Log")
+        res.status(201).json({msg: "Activity Log Created Successfully"})
+        
+    } catch (error) {
+         logger.info(`Error: ${error}`)
+        res.status(500).json({msg: "Error Creating Activity"})
+    }
+}

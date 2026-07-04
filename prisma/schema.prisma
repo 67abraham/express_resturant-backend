@@ -14,19 +14,35 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum Role {
+	ADMIN
+	MANAGER
+	STAFF //WAITER, POS OPERATOR
+	KITCHEN //CHEFS
+	CUSTOMER
+}
+
 model User {
 	id            String    @id @default(auto()) @map("_id") @db.ObjectId
 	name          String?
 	email         String    @unique
 	emailVerified Boolean
 	image         String?
-	createdAt     DateTime  @default(now())
-	updatedAt     DateTime  @updatedAt
+	role 		Role @default(CUSTOMER)
+	status 		String @default("active")
+	age 		Int?
+	gender 		String?
+	phone 		String?
+	banned 		Boolean @default(false)
+	bannedReason	String?
 	// Relations
 	sessions Session[]
 	accounts Account[]
 	activitiesLog ActivitiesLog[]
+	createdAt     DateTime  @default(now())
+	updatedAt     DateTime  @updatedAt
 	@@map("user")
+	
 }
 model Session {
 	id        String   @id @default(auto()) @map("_id") @db.ObjectId

@@ -43,7 +43,7 @@ if (process.env.NODE_ENV === 'development'){
 
 //routes 
 app.use("/api/category", categoryRoute)
-app.use("/api/activi_log", activities)
+app.use("/api/activities_log", activities)
 
 
 //test route
