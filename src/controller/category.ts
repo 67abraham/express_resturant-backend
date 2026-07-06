@@ -111,6 +111,7 @@ export const getCategory = async (req:Request, res: Response)=>{
                 orderBy: {
                      name: 'asc'
                  }
+                 
             }),
             prisma.category.count()
         ])

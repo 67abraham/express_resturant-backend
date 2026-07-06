@@ -39,6 +39,7 @@ model User {
 	sessions Session[]
 	accounts Account[]
 	activitiesLog ActivitiesLog[]
+	feedback Feedbacks[]
 	createdAt     DateTime  @default(now())
 	updatedAt     DateTime  @updatedAt
 	@@map("user")
@@ -89,6 +90,8 @@ model Category {
 	id 	String  @id @default(auto()) @map("_id") @db.ObjectId
 	name String @unique
 	slung String @unique
+
+	menu MenuItem[]
 }
 
 model ActivitiesLog {
@@ -98,6 +101,38 @@ model ActivitiesLog {
 	details String
 	createdAt DateTime @default(now())
 
-	user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+	user User @relation(fields: [userId], references: [id])
 	@@map("activities_log")
+}
+
+model Feedbacks{
+	id String @id @default(auto()) @map("_id") @db.ObjectId
+	rating Int
+	comment String
+	userId String? @db.ObjectId
+	menuItemId String @db.ObjectId
+	//relation
+	user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+	menuItem MenuItem @relation(fields: [menuItemId], references: [id], onDelete: Cascade)
+	createAt DateTime @default(now())
+
+	@@map("feedbacks")
+}
+
+model MenuItem{
+	id String @id @default(auto()) @map("_id") @db.ObjectId
+	name String
+	description Json?
+	price Float
+	discount Float? @default(0)
+	image String
+	isAvailable Boolean @default(true)
+	recipe String?
+	categoryId String @db.ObjectId
+	aiSuggestion String?
+	feedbackId String? @db.ObjectId
+	//relation
+	category Category @relation(fields: [categoryId], references: [id])
+	feedback Feedbacks[]
+
 }
