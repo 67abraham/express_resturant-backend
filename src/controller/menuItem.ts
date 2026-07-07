@@ -136,7 +136,9 @@ export const getMenuItem = async(req:Request, res:Response)=>{
                 where: whereClause,
                 include:{
                     feedback: {
-                        select:{rating: true}
+                        select:{rating: true,
+                            comment: true
+                        }
                     },
 
                 
@@ -148,24 +150,27 @@ export const getMenuItem = async(req:Request, res:Response)=>{
         const totalPage = Math.ceil(totalItem / limit);
         logger.info("database query is ok")
 
+        //calculate the rating (average & total Rate)
         const menuItemWithRate= getMenu.map((item)=>{
 
             const totalRatings = item.feedback.reduce((sum, f)=> sum + f.rating as any, 0);
 
-            const averageRate = item.feedback.length > 0 ? totalItem / item.feedback.length : 0;
+            const averageRate = item.feedback.length > 0 ? totalRatings / item.feedback.length : 0;
+            //const {feedback, ...itemData} = item
+
+
+            return {
+                ...item,
+                averageRate,
+                totalReview: totalRatings,
+            }
         })
 
-
-         await activities_log({
-                    userId : session?.user?.id as any,
-                    action: "GET_MENU_ITEM",
-                    details: `GET ALL ITEM`
-                })
 
         logger.info("FETCH ALL ITEM")
         res.status(200).json(
             {
-                data: getMenu,
+                data: menuItemWithRate,
                 totalPage,
                 skip: skip,
                 limit: limit,

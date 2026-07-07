@@ -5,6 +5,7 @@ import { requireAuth } from "../middleware/requireAuth";
 import express from "express"
 import { requirePermission } from "../middleware/requirePermission";
 import { createMenuItem, getMenuItem, getSingleMenu } from "../controller/menuItem";
+import { submitFeedback } from "../controller/feedback";
 
 export const categoryRoute = express.Router();
 export const activities = express.Router();
@@ -65,4 +66,11 @@ menuItem.get("/get_all",
 
 menuItem.get("/get_single/:id", 
     getSingleMenu
+)
+
+//feedback
+
+menuItem.post("/:menuItemId/feedback",
+    requireAuth,
+    submitFeedback
 )

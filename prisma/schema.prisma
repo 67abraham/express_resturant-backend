@@ -130,7 +130,6 @@ model MenuItem{
 	recipe String?
 	categoryId String @db.ObjectId
 	aiSuggestion String?
-	feedbackId String? @db.ObjectId
 	//relation
 	category Category @relation(fields: [categoryId], references: [id])
 	feedback Feedbacks[]
