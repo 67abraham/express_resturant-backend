@@ -6,10 +6,12 @@ import express from "express"
 import { requirePermission } from "../middleware/requirePermission";
 import { createMenuItem, getMenuItem, getSingleMenu } from "../controller/menuItem";
 import { submitFeedback } from "../controller/feedback";
+import { createTable, deleteTable, getTable, updateTable } from "../controller/table";
 
 export const categoryRoute = express.Router();
 export const activities = express.Router();
 export const menuItem = express.Router();
+export const tableRout = express.Router();
 
 categoryRoute.post("/create_category",
     requireAuth,
@@ -44,7 +46,7 @@ menuItem.post("/create",
     createMenuItem
 );
 
-menuItem.put("/update",
+menuItem.put("/update/:id",
     requireAuth,
     roleCheck(["ADMIN", "MANAGER"]),
     requirePermission("update", "menu"),
@@ -52,7 +54,7 @@ menuItem.put("/update",
     
 )
 
-menuItem.delete("/delete",
+menuItem.delete("/delete/:id",
     requireAuth,
     roleCheck(["ADMIN", "MANAGER"]),
     requirePermission("delete", "menu"),
@@ -73,4 +75,30 @@ menuItem.get("/get_single/:id",
 menuItem.post("/:menuItemId/feedback",
     requireAuth,
     submitFeedback
+)
+
+//table
+tableRout.post("/create",
+    requireAuth,
+    roleCheck(["ADMIN", "MANAGER"]),
+    requirePermission("create", "table"),
+    createTable
+);
+tableRout.put("/update/:id",
+    requireAuth,
+    roleCheck(["ADMIN", "MANAGER"]),
+    requirePermission("update", "table"),
+    updateTable
+)
+
+tableRout.delete("/delete/:id",
+    requireAuth,
+    roleCheck(["ADMIN", "MANAGER"]),
+    requirePermission("delete", "table"),
+    deleteTable
+)
+
+tableRout.get("/get_all", 
+    requireAuth,
+    getTable
 )

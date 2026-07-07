@@ -7,7 +7,7 @@ import bodyParser from "body-parser"
 import morgan from "morgan"
 import { fromNodeHeaders, toNodeHandler } from "better-auth/node"
 import { auth } from "../lib/auth"
-import { activities, categoryRoute, menuItem } from "./routes/route"
+import { activities, categoryRoute, menuItem, tableRout } from "./routes/route"
 
 
 dotenv.config()
@@ -45,6 +45,7 @@ if (process.env.NODE_ENV === 'development'){
 app.use("/api/category", categoryRoute)
 app.use("/api/activities_log", activities)
 app.use("/api/menu", menuItem)
+app.use("/api/tables", tableRout)
 
 
 //test route

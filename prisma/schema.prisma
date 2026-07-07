@@ -22,6 +22,8 @@ enum Role {
 	CUSTOMER
 }
 
+
+
 model User {
 	id            String    @id @default(auto()) @map("_id") @db.ObjectId
 	name          String?
@@ -40,6 +42,7 @@ model User {
 	accounts Account[]
 	activitiesLog ActivitiesLog[]
 	feedback Feedbacks[]
+	table Table[]
 	createdAt     DateTime  @default(now())
 	updatedAt     DateTime  @updatedAt
 	@@map("user")
@@ -135,3 +138,40 @@ model MenuItem{
 	feedback Feedbacks[]
 
 }
+
+enum TableType{
+	circle
+	square
+	rectangle
+}
+enum TableStatus{
+	OCCUPIED
+	AVAILABLE
+	RESERVED
+}
+model Table {
+	id String @id @default(auto()) @map("_id") @db.ObjectId
+	tableName String @unique
+	seats Int
+	section String @default("Main Dinning Room")
+	shape TableType @default(square)
+	tableStatus TableStatus @default(AVAILABLE)
+	userId String @db.ObjectId
+	createAt DateTime @default(now())
+
+	user User @relation(fields: [userId], references: [id])
+
+}
+
+model Reservation{
+	id String @id @default(auto()) @map("_id") @db.ObjectId
+
+	@@map("reservation")
+}
+
+model Orders{
+	id String @id @default(auto()) @map("_id") @db.ObjectId
+
+	@@map("orders")
+}
+
