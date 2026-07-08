@@ -6,7 +6,7 @@ import express from "express"
 import { requirePermission } from "../middleware/requirePermission";
 import { createMenuItem, getMenuItem, getSingleMenu } from "../controller/menuItem";
 import { submitFeedback } from "../controller/feedback";
-import { createTable, deleteTable, getTable, updateTable } from "../controller/table";
+import { createTable, deleteTable, getTable, getTableById, updateTable } from "../controller/table";
 
 export const categoryRoute = express.Router();
 export const activities = express.Router();
@@ -100,5 +100,14 @@ tableRout.delete("/delete/:id",
 
 tableRout.get("/get_all", 
     requireAuth,
+    roleCheck(["ADMIN", "MANAGER", "STAFF", "KITCHEN"]),
+    requirePermission("read", "table"),
     getTable
+)
+
+tableRout.get("/:id",
+    requireAuth,
+    roleCheck(["ADMIN", "MANAGER", "STAFF", "KITCHEN"]),
+    requirePermission("view", "table"),
+    getTableById
 )

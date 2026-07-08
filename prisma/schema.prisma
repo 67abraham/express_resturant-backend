@@ -43,6 +43,7 @@ model User {
 	activitiesLog ActivitiesLog[]
 	feedback Feedbacks[]
 	table Table[]
+	reservation Reservation[]
 	createdAt     DateTime  @default(now())
 	updatedAt     DateTime  @updatedAt
 	@@map("user")
@@ -159,19 +160,37 @@ model Table {
 	userId String @db.ObjectId
 	createAt DateTime @default(now())
 
-	user User @relation(fields: [userId], references: [id])
-
+	user User? @relation(fields: [userId], references: [id])
+	reservation Reservation[]
+	orders Orders[]
 }
 
+enum BookingStatus{
+	PENDING
+	CONFIRMED
+	CANCELLED
+	COMPLETED
+}
 model Reservation{
 	id String @id @default(auto()) @map("_id") @db.ObjectId
-
+	customerName String
+	userId String @db.ObjectId
+	tableId String @db.ObjectId
+	date DateTime 
+	guest Int
+	status BookingStatus @default(PENDING)
+//relation
+	table Table @relation(fields: [tableId], references: [id])
+	user User @relation(fields: [userId], references: [id])
 	@@map("reservation")
 }
 
 model Orders{
 	id String @id @default(auto()) @map("_id") @db.ObjectId
+	tableId String @db.ObjectId
 
+
+	table Table @relation(fields: [tableId], references: [id])
 	@@map("orders")
 }
 
